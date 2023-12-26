@@ -13,13 +13,13 @@ export type MapAPI = {
   lnglatToCoord: (lnglat: LngLat) => Coord
   coordToLnglat: (cord: Coord) => LngLat
   setCenter: (lnglat: LngLat) => void
+  createMarker: (lnglat: LngLat, red?: boolean) => Marker
 }
 
 export type MapClickHandler = (event: Point) => void
 
 export type Point = {
   lnglat: LngLat
-  pos: Coord
 }
 
 export type LngLat = {
@@ -30,6 +30,10 @@ export type LngLat = {
 export type Coord = {
   x: number
   y: number
+}
+
+export type Marker = {
+  delete: () => void
 }
 
 // TODO should support multiple source

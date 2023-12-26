@@ -70,6 +70,7 @@ const Map = forwardRef<MapAPI, MapProps>(function Map(
           clickHandler.current = null
         }
       }
+
       const lnglatToCoord: MapAPI['lnglatToCoord'] = (lnglat) => {
         if (!mapRef.current) throw new Error('map not ready')
         return mapRef.current.lngLatToPixel(
@@ -77,6 +78,7 @@ const Map = forwardRef<MapAPI, MapProps>(function Map(
           mapRef.current.getZoom()
         )
       }
+
       const coordToLnglat: MapAPI['coordToLnglat'] = (coord) => {
         if (!mapRef.current) throw new Error('map not ready')
         return mapRef.current.pixelToLngLat(
@@ -87,7 +89,21 @@ const Map = forwardRef<MapAPI, MapProps>(function Map(
 
       const setCenter: MapAPI['setCenter'] = (lnglat) => {
         if (!mapRef.current) throw new Error('map not ready')
-        return mapRef.current.setCenter([lnglat.lng, lnglat.lat], true)
+        mapRef.current.setCenter([lnglat.lng, lnglat.lat], true)
+      }
+
+      const createMarker: MapAPI['createMarker'] = (lnglat, red = false) => {
+        if (!mapRef.current) throw new Error('map not ready')
+        const marker = new mapRef.current.AMap.Marker({
+          icon: `https://webapi.amap.com/theme/v1.3/markers/n/mark_${
+            red ? 'r' : 'b'
+          }.png`,
+          position: [lnglat.lng, lnglat.lat],
+        })
+        mapRef.current.add(marker)
+        return {
+          delete: () => mapRef.current?.remove(marker),
+        }
       }
 
       window.MapAPI = {
@@ -95,6 +111,7 @@ const Map = forwardRef<MapAPI, MapProps>(function Map(
         lnglatToCoord,
         coordToLnglat,
         setCenter,
+        createMarker,
       }
 
       return window.MapAPI

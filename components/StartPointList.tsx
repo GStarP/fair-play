@@ -21,6 +21,7 @@ export default function StartPointList() {
             window.MapAPI.onClick((point) => {
               const name = prompt('请输入地点名称') || '未命名'
               setStartPoints((arr) => [...arr, { ...point, name }])
+              window.MapAPI.createMarker(point.lnglat)
               window.MapAPI.onClick()
               setPositioning(false)
             })
@@ -80,6 +81,7 @@ export default function StartPointList() {
           const coord = computerCenterCoord(coords)
           const lnglat = window.MapAPI.coordToLnglat(coord)
           window.MapAPI.setCenter(lnglat)
+          window.MapAPI.createMarker(lnglat, true)
         }}
       >
         规划
