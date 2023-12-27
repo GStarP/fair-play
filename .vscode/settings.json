@@ -5,6 +5,7 @@
     "daisyui",
     "jsapi",
     "lnglat",
+    "rightclick",
     "tailwindcss"
   ]
 }

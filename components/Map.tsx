@@ -99,10 +99,13 @@ const Map = forwardRef<MapAPI, MapProps>(function Map(
             red ? 'r' : 'b'
           }.png`,
           position: [lnglat.lng, lnglat.lat],
+          anchor: 'bottom-center',
         })
+        const deleteMarker = () => mapRef.current?.remove(marker)
+        marker.on('rightclick', deleteMarker)
         mapRef.current.add(marker)
         return {
-          delete: () => mapRef.current?.remove(marker),
+          delete: deleteMarker,
         }
       }
 

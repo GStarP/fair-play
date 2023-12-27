@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "@amap/amap-jsapi-loader": "^1.0.1",
-    "circumcircle": "^1.0.0",
     "jotai": "^2.6.0",
     "next": "14.0.4",
     "react": "^18",

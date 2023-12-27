@@ -1,10 +1,11 @@
-import { computerCenterCoord } from '@/common/math'
+import { geometricMedian } from '@/common/math'
 import { PlanStore } from '@/store'
-import { getDefaultStore, useAtom, useAtomValue } from 'jotai'
+import { getDefaultStore, useAtom } from 'jotai'
 
 export default function StartPointList() {
   const [positioning, setPositioning] = useAtom(PlanStore.positioning)
   const [startPoints, setStartPoints] = useAtom(PlanStore.startPoints)
+  const [planning, setPlanning] = useAtom(PlanStore.planning)
 
   return (
     <div className="flex flex-col w-60 h-full border-r">
@@ -20,9 +21,9 @@ export default function StartPointList() {
             setPositioning(true)
             window.MapAPI.onClick((point) => {
               const name = prompt('请输入地点名称') || '未命名'
-              setStartPoints((arr) => [...arr, { ...point, name }])
-              window.MapAPI.createMarker(point.lnglat)
+              const marker = window.MapAPI.createMarker(point.lnglat)
               window.MapAPI.onClick()
+              setStartPoints((arr) => [...arr, { ...point, name, marker }])
               setPositioning(false)
             })
           }}
@@ -47,6 +48,7 @@ export default function StartPointList() {
             <button
               className="hover:bg-slate-200 ml-auto rounded-full p-1"
               onClick={() => {
+                point.marker.delete()
                 setStartPoints(startPoints.filter((p) => p !== point))
               }}
             >
@@ -71,20 +73,22 @@ export default function StartPointList() {
 
       <button
         className="btn btn-block btn-success no-animation rounded-none mt-auto"
+        disabled={planning}
         onClick={() => {
           if (!window.MapAPI) return
-
+          setPlanning(true)
           const startPoints = getDefaultStore().get(PlanStore.startPoints)
           const coords = startPoints.map((p) =>
             window.MapAPI.lnglatToCoord(p.lnglat)
           )
-          const coord = computerCenterCoord(coords)
+          const coord = geometricMedian(coords)
           const lnglat = window.MapAPI.coordToLnglat(coord)
           window.MapAPI.setCenter(lnglat)
           window.MapAPI.createMarker(lnglat, true)
+          setPlanning(false)
         }}
       >
-        规划
+        {planning ? '规划中...' : '规划'}
       </button>
     </div>
   )
